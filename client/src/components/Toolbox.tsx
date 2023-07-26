@@ -33,7 +33,11 @@ function Toolbox() {
         code,
         setCode,
         textAlign,
-        setTextAlign
+        setTextAlign,
+        bulletList,
+        setBulletList,
+        orderedList,
+        setOrderedList
     } = useToolboxStore()
 
 
@@ -85,11 +89,11 @@ function Toolbox() {
             <Separator />
 
             <ToogleGroup>
-                <Toggle>
+                <Toggle pressed={bulletList} onClick={() => setBulletList(!bulletList)}>
                     <ListIcon size={18} />
                 </Toggle>
 
-                <Toggle>
+                <Toggle pressed={orderedList} onClick={() => setOrderedList(!orderedList)}>
                     <ListOrderedIcon size={18} />
                 </Toggle>
             </ToogleGroup>

@@ -29,6 +29,10 @@ interface ToolboxState {
     setCode: (strike: boolean) => void
     textAlign: "left" | "center" | "right" | undefined
     setTextAlign: (textAlign: "left" | "center" | "right" | undefined) => void
+    bulletList: boolean
+    setBulletList: (bulletList: boolean) => void
+    orderedList: boolean
+    setOrderedList: (orderedList: boolean) => void
 }
 
 export const useToolboxStore = create<ToolboxState>()((set) => ({
@@ -43,5 +47,9 @@ export const useToolboxStore = create<ToolboxState>()((set) => ({
     code: false,
     setCode: (code: boolean) => set({ code }),
     textAlign: "left",
-    setTextAlign: (textAlign: "left" | "center" | "right" | undefined) => set({ textAlign })
+    setTextAlign: (textAlign: "left" | "center" | "right" | undefined) => set({ textAlign }),
+    bulletList: false,
+    setBulletList: (bulletList: boolean) => set({ bulletList }),
+    orderedList: false,
+    setOrderedList: (orderedList: boolean) => set({ orderedList }),
 }))

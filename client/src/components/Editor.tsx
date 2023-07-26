@@ -13,6 +13,9 @@ import TextAlign from '@tiptap/extension-text-align'
 import { io } from 'socket.io-client'
 import { Loader } from './ui/loader'
 import { AnimatePresence, motion } from 'framer-motion'
+import BulletList from '@tiptap/extension-bullet-list'
+import ListItem from '@tiptap/extension-list-item'
+import OrderedList from '@tiptap/extension-ordered-list'
 
 
 
@@ -33,7 +36,11 @@ function Editor() {
         code,
         setCode,
         textAlign,
-        setTextAlign
+        setTextAlign,
+        bulletList,
+        setBulletList,
+        orderedList,
+        setOrderedList,
     } = useToolboxStore()
 
     // connecting to main web socket
@@ -71,7 +78,6 @@ function Editor() {
 
 
 
-
     // initialize editor with starter kit
     const editor = useEditor({
         extensions: [
@@ -82,7 +88,10 @@ function Editor() {
             Code,
             TextAlign.configure({
                 types: ['heading', 'paragraph']
-            })
+            }),
+            ListItem,
+            BulletList,
+            OrderedList,
         ],
         editable: true,
         content: content,
@@ -92,8 +101,7 @@ function Editor() {
             // editor?.commands.setNodeSelection(1)
         },
         onSelectionUpdate: ({ editor }) => {
-            // const start = editor.state.selection.$from.pos
-            // const end = editor.state.selection.$to.pos
+
         },
         autofocus: true,
         enableCoreExtensions: true,
@@ -173,6 +181,29 @@ function Editor() {
         if (textAlign) editor?.commands.setTextAlign(textAlign)
         else editor?.commands.unsetTextAlign()
     }, [textAlign])
+
+
+    // changes state for bullet list
+    useEffect(() => {
+        setBulletList(editor?.isActive('bulletList') ?? false)
+    }, [editor?.isActive('bulletList')])
+
+
+    useEffect(() => {
+        if (editor?.isActive('bulletList') === bulletList) return
+        else editor?.commands.toggleBulletList()
+    }, [bulletList])
+
+    // changes state for ordered list
+    useEffect(() => {
+        setOrderedList(editor?.isActive('orderedList') ?? false)
+    }, [editor?.isActive('orderedList')])
+
+
+    useEffect(() => {
+        if (editor?.isActive('orderedList') === orderedList) return
+        else editor?.commands.toggleOrderedList()
+    }, [orderedList])
 
 
     return (
