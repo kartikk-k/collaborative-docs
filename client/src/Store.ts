@@ -3,20 +3,8 @@ import InitialData from './Initialdata.json'
 
 
 
-interface userDataState {
-    username: string
-    setUsername: (username: string) => void
-}
-
-export const userDataStore = create<userDataState>()((set) => ({
-    username: '',
-    setUsername: (username: string) => set({ username })
-}))
-
-
 /* The code defines an interface `EditorState` which describes the content of the editor state object used in
 the editor */
-
 interface EditorState {
     content: {}
     setContent: (content: {}) => void

@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { useEditorStore, useToolboxStore, userDataStore } from '@/Store'
-import { useEditor, EditorContent, EditorContentState } from '@tiptap/react'
+import { useEditorStore, useToolboxStore } from '@/Store'
+import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import Bold from '@tiptap/extension-bold'
@@ -13,37 +13,41 @@ import { io } from 'socket.io-client'
 
 
 function Editor() {
-    // const socket = io('http://192.168.0.101:8080/doc')
 
-    // manages state using zustand
-    const { username } = userDataStore()
     const { content, setContent } = useEditorStore()
-    const [sendId, setSendId] = useState<string>('')
     const [socket, setSocket] = useState<any>()
 
-    const id = '1'
-
+    // connecting to main web socket
     useEffect(() => {
         const socket = io('http://192.168.0.101:8080')
         setSocket(socket)
     }, [])
 
+    // joining document
     useEffect(() => {
         if (!socket) return
         socket.emit('join-document', '1')
     }, [socket])
 
+    // receiving real-time changes from server
     useEffect(() => {
         if (!socket) return
 
-        socket.on('receive-changes', (value: string) => {
-            editor?.commands.setContent(value)
-            console.log("received: ", value)
+        socket.on('receive-changes', (value: {}) => {
+            if (!editor) return
+
+            const { from, to } = editor.state.selection
+
+            editor.commands.setContent(value)
+
+            // editor.state.(from, to)
+            // console.log("received: ", value)
         })
 
     }, [socket])
 
 
+    // handle change and emit changes to server via ws
     const handleChange = (value: {}) => {
         setContent(value)
         if (!socket) return
@@ -72,7 +76,6 @@ function Editor() {
             Underline,
             Strike,
             Code,
-            // Dropcursor,
         ],
         editable: true,
         content: content,
@@ -83,6 +86,14 @@ function Editor() {
         enableCoreExtensions: true,
     })
 
+
+    // get cursor position
+    const getCarretPosition = () => {
+        if (!editor) return
+        const { from, to } = editor.state.selection
+        // console.log("carret pos: ", from, to)
+        return { from, to }
+    }
 
 
     // changes state for bold toggle according to editor 

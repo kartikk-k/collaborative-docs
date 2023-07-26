@@ -16,12 +16,10 @@ import {
     Link2Icon,
     UserIcon,
 } from 'lucide-react'
-import { useToolboxStore, userDataStore } from '@/Store'
+import { useToolboxStore } from '@/Store'
 import { Input } from './ui/input'
 
 function Toolbox() {
-
-    const { username, setUsername } = userDataStore()
 
     const {
         bold,
@@ -96,13 +94,6 @@ function Toolbox() {
                     <Link2Icon size={18} />
                 </Toggle>
             </ToogleGroup>
-
-            <Separator />
-
-            {/* <label className='absolute flex items-center gap-2 text-sm text-gray-600 right-4'>
-                <UserIcon size={20} />
-                <Input value={username} onChange={(e) => setUsername(e.target.value)} />
-            </label> */}
 
         </div>
     )
