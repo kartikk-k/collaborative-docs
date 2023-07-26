@@ -1,0 +1,11 @@
+.ProseMirror {
+    @apply flex flex-col gap-8 border-none outline-none;
+}
+
+.ProseMirror h1 {
+    @apply text-3xl font-bold text-zinc-800;
+}
+
+.ProseMirror code {
+    @apply bg-gray-200 px-1 py-1 rounded-md;
+}
