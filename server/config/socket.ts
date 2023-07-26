@@ -2,9 +2,6 @@ import { Server } from 'socket.io';
 import { Server as HttpServer } from 'http';
 
 
-
-console.log("Starting wss")
-
 // Initialize Socket.IO with the HTTP server
 const initSocketIO = (server: HttpServer): Server => {
 

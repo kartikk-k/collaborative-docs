@@ -8,7 +8,11 @@ import Underline from '@tiptap/extension-underline'
 import Bold from '@tiptap/extension-bold'
 import Strike from '@tiptap/extension-strike'
 import Code from '@tiptap/extension-code'
+import TextAlign from '@tiptap/extension-text-align'
+
 import { io } from 'socket.io-client'
+import { Loader } from './ui/loader'
+import { AnimatePresence, motion } from 'framer-motion'
 
 
 
@@ -16,6 +20,21 @@ function Editor() {
 
     const { content, setContent } = useEditorStore()
     const [socket, setSocket] = useState<any>()
+
+    const {
+        bold,
+        setBold,
+        italic,
+        setItalic,
+        underline,
+        setUnderline,
+        strike,
+        setStrike,
+        code,
+        setCode,
+        textAlign,
+        setTextAlign
+    } = useToolboxStore()
 
     // connecting to main web socket
     useEffect(() => {
@@ -36,12 +55,8 @@ function Editor() {
         socket.on('receive-changes', (value: {}) => {
             if (!editor) return
 
-            const { from, to } = editor.state.selection
-
             editor.commands.setContent(value)
 
-            // editor.state.(from, to)
-            // console.log("received: ", value)
         })
 
     }, [socket])
@@ -49,24 +64,13 @@ function Editor() {
 
     // handle change and emit changes to server via ws
     const handleChange = (value: {}) => {
-        setContent(value)
+        // setContent(value)
         if (!socket) return
         socket.emit('send-changes', value)
     }
 
 
-    const {
-        bold,
-        setBold,
-        italic,
-        setItalic,
-        underline,
-        setUnderline,
-        strike,
-        setStrike,
-        code,
-        setCode,
-    } = useToolboxStore()
+
 
     // initialize editor with starter kit
     const editor = useEditor({
@@ -76,40 +80,42 @@ function Editor() {
             Underline,
             Strike,
             Code,
+            TextAlign.configure({
+                types: ['heading', 'paragraph']
+            })
         ],
         editable: true,
         content: content,
         onUpdate: ({ editor }) => {
             handleChange(editor.getJSON())
+            // editor?.commands.setTextSelection(420)
+            // editor?.commands.setNodeSelection(1)
+        },
+        onSelectionUpdate: ({ editor }) => {
+            // const start = editor.state.selection.$from.pos
+            // const end = editor.state.selection.$to.pos
         },
         autofocus: true,
         enableCoreExtensions: true,
+        editorProps: {
+
+        }
     })
 
 
-    // get cursor position
-    const getCarretPosition = () => {
-        if (!editor) return
-        const { from, to } = editor.state.selection
-        // console.log("carret pos: ", from, to)
-        return { from, to }
-    }
-
-
-    // changes state for bold toggle according to editor 
+    // changes state for bold toggle
     useEffect(() => {
         setBold(editor?.isActive('bold') ?? false)
     }, [editor?.isActive('bold')])
 
 
-    // triggers bold action according to toggle button
     useEffect(() => {
         if (bold === true) editor?.commands.setBold()
         else editor?.commands.unsetBold()
     }, [bold])
 
 
-    // changes state for italic toggle according to editor
+    // changes state for italic toggle
     useEffect(() => {
         setItalic(editor?.isActive('italic') ?? false)
     }, [editor?.isActive('italic')])
@@ -121,8 +127,7 @@ function Editor() {
     }, [italic])
 
 
-
-    // changes state for underline toggle according to editor
+    // changes state for underline toggle
     useEffect(() => {
         setUnderline(editor?.isActive('underline') ?? false)
     }, [editor?.isActive('underline')])
@@ -134,7 +139,7 @@ function Editor() {
     }, [underline])
 
 
-    // changes state for strike toggle according to editor
+    // changes state for strike toggle
     useEffect(() => {
         setStrike(editor?.isActive('strike') ?? false)
     }, [editor?.isActive('strike')])
@@ -145,7 +150,7 @@ function Editor() {
         else editor?.commands.unsetStrike()
     }, [strike])
 
-    // changes state for strike toggle according to editor
+    // changes state for strike toggle
     useEffect(() => {
         setCode(editor?.isActive('code') ?? false)
     }, [editor?.isActive('code')])
@@ -157,12 +162,49 @@ function Editor() {
     }, [code])
 
 
+    // changes state for text align
+    useEffect(() => {
+        setTextAlign(editor?.isActive({ textAlign: "left" }) ? "left" : editor?.isActive({ textAlign: "center" }) ? "center" : editor?.isActive({ textAlign: "right" }) ? "right" : "left")
+    }, [editor?.isActive({ textAlign: "left" }), editor?.isActive({ textAlign: "center" }), editor?.isActive({ textAlign: "right" })])
+
+
+    useEffect(() => {
+        console.log("text align", textAlign)
+        if (textAlign) editor?.commands.setTextAlign(textAlign)
+        else editor?.commands.unsetTextAlign()
+    }, [textAlign])
+
+
     return (
         <div className='max-w-4xl p-4 m-2 my-6 text-gray-700 md:m-8'>
 
-            <EditorContent
-                editor={editor}
-            />
+            <AnimatePresence>
+
+                {editor ? (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} >
+
+                        <EditorContent
+                            editor={editor}
+                        />
+
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        exit={{ opacity: 0 }}
+                        className='flex flex-col items-center gap-2'
+                    >
+
+                        <Loader isLoading={true} />
+                        <span className='text-sm'>Loading editor</span>
+
+                    </motion.div>
+                )}
+
+
+            </AnimatePresence>
 
         </div>
     )

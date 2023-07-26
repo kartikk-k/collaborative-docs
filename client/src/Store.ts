@@ -27,6 +27,8 @@ interface ToolboxState {
     setStrike: (strike: boolean) => void
     code: boolean
     setCode: (strike: boolean) => void
+    textAlign: "left" | "center" | "right" | undefined
+    setTextAlign: (textAlign: "left" | "center" | "right" | undefined) => void
 }
 
 export const useToolboxStore = create<ToolboxState>()((set) => ({
@@ -39,5 +41,7 @@ export const useToolboxStore = create<ToolboxState>()((set) => ({
     strike: false,
     setStrike: (strike: boolean) => set({ strike }),
     code: false,
-    setCode: (code: boolean) => set({ code })
+    setCode: (code: boolean) => set({ code }),
+    textAlign: "left",
+    setTextAlign: (textAlign: "left" | "center" | "right" | undefined) => set({ textAlign })
 }))

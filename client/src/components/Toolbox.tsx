@@ -32,7 +32,14 @@ function Toolbox() {
         setStrike,
         code,
         setCode,
+        textAlign,
+        setTextAlign
     } = useToolboxStore()
+
+
+    const handleTextAlign = (value: "left" | "center" | "right") => {
+        setTextAlign(value)
+    }
 
     return (
         <div className='relative flex items-center h-12 gap-4 p-4 py-2 overflow-x-auto overflow-y-hidden text-black bg-gray-100 border-b'>
@@ -62,15 +69,15 @@ function Toolbox() {
             <Separator />
 
             <ToogleGroup>
-                <Toggle>
+                <Toggle pressed={textAlign === "left"} onClick={() => handleTextAlign("left")}>
                     <AlignLeftIcon size={18} />
                 </Toggle>
 
-                <Toggle>
+                <Toggle pressed={textAlign === "center"} onClick={() => handleTextAlign("center")}>
                     <AlignCenterIcon size={18} />
                 </Toggle>
 
-                <Toggle>
+                <Toggle pressed={textAlign === "right"} onClick={() => handleTextAlign("right")}>
                     <AlignRightIcon size={18} />
                 </Toggle>
             </ToogleGroup>
