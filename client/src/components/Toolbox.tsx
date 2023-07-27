@@ -15,9 +15,22 @@ import {
     StrikethroughIcon,
     Link2Icon,
     UserIcon,
+    PlusIcon,
+    ChevronDownIcon,
+    Heading1Icon,
 } from 'lucide-react'
 import { useToolboxStore } from '@/Store'
-import { Input } from './ui/input'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import AddBlockMenu from './AddBlockMenu'
+
+// import { Input } from './ui/input'
 
 function Toolbox() {
 
@@ -46,7 +59,11 @@ function Toolbox() {
     }
 
     return (
-        <div className='relative flex items-center h-12 gap-4 p-4 py-2 overflow-x-auto overflow-y-hidden text-black bg-gray-100 border-b'>
+        <div className='relative flex items-center h-12 gap-4 p-4 py-2 overflow-x-auto overflow-y-hidden text-gray-600 bg-gray-100 border-b'>
+
+            {/* <AddBlockMenu />
+
+            <Separator /> */}
 
             <ToogleGroup>
                 <Toggle pressed={bold} onClick={() => setBold(!bold)}>
