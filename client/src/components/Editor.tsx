@@ -3,26 +3,25 @@
 import React, { useEffect, useState } from 'react'
 import { useEditorStore, useToolboxStore } from '@/Store'
 import { useEditor, EditorContent } from '@tiptap/react'
+import { io } from 'socket.io-client'
+import { Loader } from './ui/loader'
+import { AnimatePresence, motion } from 'framer-motion'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import Bold from '@tiptap/extension-bold'
 import Strike from '@tiptap/extension-strike'
 import Code from '@tiptap/extension-code'
 import TextAlign from '@tiptap/extension-text-align'
-
-import { io } from 'socket.io-client'
-import { Loader } from './ui/loader'
-import { AnimatePresence, motion } from 'framer-motion'
 import BulletList from '@tiptap/extension-bullet-list'
 import ListItem from '@tiptap/extension-list-item'
 import OrderedList from '@tiptap/extension-ordered-list'
-
 
 
 function Editor() {
 
     const { content, setContent } = useEditorStore()
     const [socket, setSocket] = useState<any>()
+    const [caretPosition, setCaretPosition] = useState<{ start: number, end: number }>({ start: 0, end: 0 })
 
     const {
         bold,
@@ -43,6 +42,7 @@ function Editor() {
         setOrderedList,
     } = useToolboxStore()
 
+
     // connecting to main web socket
     useEffect(() => {
         const socket = io('http://192.168.0.101:8080')
@@ -61,8 +61,15 @@ function Editor() {
 
         socket.on('receive-changes', (value: {}) => {
             if (!editor) return
+            // gets selection/cursor position
+            const { from, to } = editor.view.state.selection
 
+            // sets new content
             editor.commands.setContent(value)
+
+            // sets selection/cursor to previous position
+            editor.commands.setTextSelection({ from, to })
+            // editor.commands.setNodeSelection({ from, to })
 
         })
 
@@ -71,7 +78,6 @@ function Editor() {
 
     // handle change and emit changes to server via ws
     const handleChange = (value: {}) => {
-        // setContent(value)
         if (!socket) return
         socket.emit('send-changes', value)
     }
@@ -97,18 +103,21 @@ function Editor() {
         content: content,
         onUpdate: ({ editor }) => {
             handleChange(editor.getJSON())
-            // editor?.commands.setTextSelection(420)
-            // editor?.commands.setNodeSelection(1)
         },
         onSelectionUpdate: ({ editor }) => {
+            if (editor.view.state.selection.empty) return
 
+            const { from, to } = editor.view.state.selection
+            // setCaretPosition({ start: from, end: to })
+
+            const a = editor.view.state.selection
+            console.log(a)
         },
         autofocus: true,
         enableCoreExtensions: true,
-        editorProps: {
-
-        }
     })
+
+
 
 
     // changes state for bold toggle
@@ -190,7 +199,7 @@ function Editor() {
 
 
     useEffect(() => {
-        if (editor?.isActive('bulletList') === bulletList) return
+        if (editor?.isActive('bulletList') === bulletList) return // to avoid infinite loop
         else editor?.commands.toggleBulletList()
     }, [bulletList])
 
@@ -201,7 +210,7 @@ function Editor() {
 
 
     useEffect(() => {
-        if (editor?.isActive('orderedList') === orderedList) return
+        if (editor?.isActive('orderedList') === orderedList) return // to avoid infinite loop
         else editor?.commands.toggleOrderedList()
     }, [orderedList])
 

@@ -5,7 +5,7 @@ import React from 'react'
 function DocumentHeader() {
     return (
         <div className='flex items-center justify-between gap-4 p-4 bg-white border-b h-18'>
-            <div className='flex items-center gap-4 select-none whitespace-nowrap'>
+            <div className='flex items-center gap-4 select-none'>
 
                 <button title='Back' className='p-2 text-gray-500 bg-gray-200 rounded-full'>
                     <ArrowLeftIcon size={20} />
