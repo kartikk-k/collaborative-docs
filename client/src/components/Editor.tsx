@@ -21,7 +21,6 @@ function Editor() {
 
     const { content, setContent } = useEditorStore()
     const [socket, setSocket] = useState<any>()
-    const [caretPosition, setCaretPosition] = useState<{ start: number, end: number }>({ start: 0, end: 0 })
 
     const {
         bold,
@@ -83,7 +82,6 @@ function Editor() {
     }
 
 
-
     // initialize editor with starter kit
     const editor = useEditor({
         extensions: [
@@ -106,17 +104,10 @@ function Editor() {
         },
         onSelectionUpdate: ({ editor }) => {
             if (editor.view.state.selection.empty) return
-
-            const { from, to } = editor.view.state.selection
-            // setCaretPosition({ start: from, end: to })
-
-            const a = editor.view.state.selection
-            console.log(a)
         },
         autofocus: true,
         enableCoreExtensions: true,
     })
-
 
 
 
@@ -221,7 +212,11 @@ function Editor() {
             <AnimatePresence>
 
                 {editor ? (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} >
+                    <motion.div className='relative' initial={{ opacity: 0 }} animate={{ opacity: 1 }} >
+
+                        {/* <div
+                            style={{ left: caretPosition, top: 0 }}
+                            className='absolute w-5 h-2 rounded-full bg-primary'></div> */}
 
                         <EditorContent
                             editor={editor}

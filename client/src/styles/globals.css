@@ -29,7 +29,10 @@ body {
     @apply text-primary bg-primary/20;
 }
 
-.pill {
-    border: 1px solid #6AB8FF;
-    background: linear-gradient(80deg, #2797FF 0%, #3DA1FF 0.01%, #2454FF 100%);
+.screen-center {
+    @apply h-screen flex flex-col items-center justify-center;
+}
+
+a {
+    @apply underline underline-offset-1 text-blue-700;
 }
