@@ -1,11 +1,12 @@
 import React, { createContext, useState, useEffect } from "react";
 import supabaseClient from "../config/supabaseClient";
-import { AuthContextType } from "../typings";
+import { AuthContextType, UserDataType } from "../typings";
 
 
 
 const AuthContext = createContext<AuthContextType>({
     isAuthenticated: undefined,
+    userData: null
 })
 
 export default AuthContext
@@ -19,6 +20,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(undefined)
+    const [userData, setUserData] = useState<UserDataType | null>(null)
 
     useEffect(() => {
         getUser()
@@ -31,10 +33,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         try {
             const { data, error } = await supabaseClient.auth.getUser()
 
-            setTimeout(() => {
-                if (!data.user) return setIsAuthenticated(false)
-                else return setIsAuthenticated(true)
-            }, 2000)
+            if (data.user?.aud === "authenticated") {
+                setUserData({
+                    id: data.user.id,
+                    name: data.user.identities![0].identity_data!.full_name! || data.user.email!.split("@")[0],
+                    email: data.user.email!,
+                    isAuthenticated: true,
+                })
+                setIsAuthenticated(true)
+
+            } else {
+                return setIsAuthenticated(false)
+            }
 
         } catch (err: any) {
             console.log(err)
@@ -45,6 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const contextData = {
         isAuthenticated: isAuthenticated,
+        userData: userData,
     }
 
     return <AuthContext.Provider value={contextData}>
