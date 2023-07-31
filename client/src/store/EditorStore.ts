@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import InitialData from './Initialdata.json'
+import InitialData from '../Initialdata.json'
 
 
 

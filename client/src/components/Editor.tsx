@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { useEditorStore, useToolboxStore } from '@/Store'
+import { useEditorStore, useToolboxStore } from '@/store/EditorStore'
 import { useEditor, EditorContent } from '@tiptap/react'
 import { io } from 'socket.io-client'
 import { Loader } from './ui/loader'
@@ -19,7 +19,7 @@ import OrderedList from '@tiptap/extension-ordered-list'
 
 function Editor() {
 
-    const { content, setContent } = useEditorStore()
+    const { content } = useEditorStore()
     const [socket, setSocket] = useState<any>()
 
     const {

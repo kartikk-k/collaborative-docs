@@ -1,8 +1,24 @@
-import { ArrowLeftIcon, LockIcon } from 'lucide-react'
-import Link from 'next/link'
 import React from 'react'
+import { Toggle } from './ui/toggle'
+import { ArrowLeftIcon, LockIcon, RadioTowerIcon } from 'lucide-react'
+import { useActiveDocumentStore } from '@/store/DocumentStore'
+import CreateToast from './ToastNotification'
+
 
 function DocumentHeader() {
+    const { collobrativeMode, setCollobrativeMode, activeDocument } = useActiveDocumentStore()
+
+    // handles enable/disable for collobrative mode
+    const collobrativeModeHandler = () => {
+        // check is document is selected
+        if (!activeDocument) return CreateToast({ heading: "Error", message: "Something went wrong. Go back." })
+
+        // check if document is private
+        if (activeDocument.share_status === "private") return CreateToast({ heading: "Error", message: "You can't enable collobrative mode on private document, swicth mode to collaborate with others." })
+        else setCollobrativeMode(!collobrativeMode)
+
+    }
+
     return (
         <div className='flex items-center justify-between gap-4 p-4 bg-white border-b h-18'>
             <div className='flex items-center gap-4 select-none'>
@@ -19,6 +35,12 @@ function DocumentHeader() {
             </div>
 
             <div className='flex items-center gap-4'>
+
+                {/* <div className='flex items-center gap-1 text-sm text-gray-600'> */}
+                <Toggle pressed={collobrativeMode} onClick={() => collobrativeModeHandler()}>
+                    <RadioTowerIcon size={18} strokeWidth={1.5} />
+                </Toggle>
+                {/* </div> */}
 
                 <button className='items-center hidden gap-2 px-4 py-2 text-sm text-white duration-200 rounded-xl hover:bg-primary/90 sm:flex bg-primary'>
                     <LockIcon size={16} />

@@ -1,12 +1,12 @@
 import React, { useContext, useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import { FileIcon, FolderIcon, Loader2Icon, PlusIcon, UnplugIcon } from 'lucide-react'
-import { useUserStore } from '@/Store'
+import { useUserStore } from '@/store/EditorStore'
 import AuthContext from '../../context/AuthContext'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import supabaseClient from '../../config/supabaseClient'
-import { useDocmentsStore } from '../../Store'
+import { useDocmentsStore } from '../store/DocumentStore'
 
 function Dashboard() {
     const { isAuthenticated, userData } = useContext(AuthContext)

@@ -19,7 +19,7 @@ import {
     ChevronDownIcon,
     Heading1Icon,
 } from 'lucide-react'
-import { useToolboxStore } from '@/Store'
+import { useToolboxStore } from '@/store/EditorStore'
 import {
     DropdownMenu,
     DropdownMenuContent,
