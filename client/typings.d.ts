@@ -16,6 +16,7 @@ export interface DocumentType {
     id: string;
     created_at: string;
     title: string;
+    creator: string;
     share_status: "private" | "public" | "limited";
     content: JSON[] | null;
     ghost_documnet: boolean;

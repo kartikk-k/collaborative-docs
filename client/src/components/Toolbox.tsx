@@ -29,6 +29,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import AddBlockMenu from './AddBlockMenu'
+import { useActiveDocumentStore } from '@/store/DocumentStore'
 
 // import { Input } from './ui/input'
 
@@ -53,7 +54,12 @@ function Toolbox() {
         setOrderedList
     } = useToolboxStore()
 
+    const { isEditable, isFetching } = useActiveDocumentStore()
 
+    // disables editor actions if document is not editable due to share settings or if document is loading
+    const disabled = !isEditable || isFetching
+
+    // handles text alignment
     const handleTextAlign = (value: "left" | "center" | "right") => {
         setTextAlign(value)
     }
@@ -65,52 +71,55 @@ function Toolbox() {
 
             <Separator /> */}
 
+            {/* text-styling options */}
             <ToogleGroup>
-                <Toggle pressed={bold} onClick={() => setBold(!bold)}>
+                <Toggle disabled={disabled} pressed={bold} onClick={() => setBold(!bold)}>
                     <BoldIcon size={18} />
                 </Toggle>
 
-                <Toggle pressed={underline} onClick={() => setUnderline(!underline)}>
+                <Toggle disabled={disabled} pressed={underline} onClick={() => setUnderline(!underline)}>
                     <UnderlineIcon size={18} />
                 </Toggle>
 
-                <Toggle pressed={italic} onClick={() => setItalic(!italic)}>
+                <Toggle disabled={disabled} pressed={italic} onClick={() => setItalic(!italic)}>
                     <ItalicIcon size={18} />
                 </Toggle>
 
-                <Toggle pressed={strike} onClick={() => setStrike(!strike)}>
+                <Toggle disabled={disabled} pressed={strike} onClick={() => setStrike(!strike)}>
                     <StrikethroughIcon size={18} />
                 </Toggle>
 
-                <Toggle pressed={code} onClick={() => setCode(!code)}>
+                <Toggle disabled={disabled} pressed={code} onClick={() => setCode(!code)}>
                     <CodeIcon size={18} />
                 </Toggle>
             </ToogleGroup>
 
             <Separator />
 
+            {/* text-alignment options */}
             <ToogleGroup>
-                <Toggle pressed={textAlign === "left"} onClick={() => handleTextAlign("left")}>
+                <Toggle disabled={disabled} pressed={textAlign === "left"} onClick={() => handleTextAlign("left")}>
                     <AlignLeftIcon size={18} />
                 </Toggle>
 
-                <Toggle pressed={textAlign === "center"} onClick={() => handleTextAlign("center")}>
+                <Toggle disabled={disabled} pressed={textAlign === "center"} onClick={() => handleTextAlign("center")}>
                     <AlignCenterIcon size={18} />
                 </Toggle>
 
-                <Toggle pressed={textAlign === "right"} onClick={() => handleTextAlign("right")}>
+                <Toggle disabled={disabled} pressed={textAlign === "right"} onClick={() => handleTextAlign("right")}>
                     <AlignRightIcon size={18} />
                 </Toggle>
             </ToogleGroup>
 
             <Separator />
 
+            {/* list view options */}
             <ToogleGroup>
-                <Toggle pressed={bulletList} onClick={() => setBulletList(!bulletList)}>
+                <Toggle disabled={disabled} pressed={bulletList} onClick={() => setBulletList(!bulletList)}>
                     <ListIcon size={18} />
                 </Toggle>
 
-                <Toggle pressed={orderedList} onClick={() => setOrderedList(!orderedList)}>
+                <Toggle disabled={disabled} pressed={orderedList} onClick={() => setOrderedList(!orderedList)}>
                     <ListOrderedIcon size={18} />
                 </Toggle>
             </ToogleGroup>
@@ -118,7 +127,7 @@ function Toolbox() {
             <Separator />
 
             <ToogleGroup>
-                <Toggle>
+                <Toggle disabled={disabled}>
                     <Link2Icon size={18} />
                 </Toggle>
             </ToogleGroup>

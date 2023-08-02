@@ -23,10 +23,8 @@ function Document() {
 
     // gets document when id is available and user is authenticated
     useEffect(() => {
-        if (isAuthenticated !== undefined && !isAuthenticated) {
-            router.push('/account/login')
-            return
-        }
+
+        if (isAuthenticated === undefined) return
 
         if (!id) return
 
@@ -64,29 +62,29 @@ function Document() {
 
     return (
         <div>
-            <div className='sticky top-0 z-10'>
-                <DocumentHeader />
-                <Toolbox />
-            </div>
-
-            {isFetching === false ? (
-                <Editor />
-            ) : (
+            {isFetching ? (
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
                     exit={{ opacity: 0 }}
-                    className='flex flex-col items-center justify-center gap-2 my-40'
+                    className='gap-2 screen-center'
                 >
 
                     <Loader />
                     <span className='text-sm'>Loading editor</span>
 
                 </motion.div>
+            ) : (
+
+                <div className='sticky top-0 z-10'>
+                    <DocumentHeader title={activeDocument!.title} createdAt={activeDocument!.created_at} />
+                    <Toolbox />
+                    <Editor />
+                </div>
             )}
 
-        </div>
+        </div >
     )
 }
 

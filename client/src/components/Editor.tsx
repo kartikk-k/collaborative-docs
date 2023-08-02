@@ -15,11 +15,14 @@ import TextAlign from '@tiptap/extension-text-align'
 import BulletList from '@tiptap/extension-bullet-list'
 import ListItem from '@tiptap/extension-list-item'
 import OrderedList from '@tiptap/extension-ordered-list'
+import Placeholder from '@tiptap/extension-placeholder'
+import { useActiveDocumentStore } from '@/store/DocumentStore'
 
 
 function Editor() {
 
     const { content } = useEditorStore()
+    const { isEditable, activeDocument } = useActiveDocumentStore()
     const [socket, setSocket] = useState<any>()
 
     const {
@@ -96,9 +99,12 @@ function Editor() {
             ListItem,
             BulletList,
             OrderedList,
+            Placeholder.configure({
+                placeholder: 'Start typing...',
+            })
         ],
         editable: true,
-        content: content,
+        content: activeDocument?.content,
         onUpdate: ({ editor }) => {
             handleChange(editor.getJSON())
         },
@@ -108,7 +114,6 @@ function Editor() {
         autofocus: true,
         enableCoreExtensions: true,
     })
-
 
 
     // changes state for bold toggle
@@ -212,13 +217,15 @@ function Editor() {
             <AnimatePresence>
 
                 {editor ? (
-                    <motion.div className='relative' initial={{ opacity: 0 }} animate={{ opacity: 1 }} >
+                    <motion.div className='relative cursor-none' initial={{ opacity: 0 }} animate={{ opacity: 1 }} >
 
                         {/* <div
                             style={{ left: caretPosition, top: 0 }}
                             className='absolute w-5 h-2 rounded-full bg-primary'></div> */}
 
                         <EditorContent
+                            className='cursor-auto'
+                            placeholder='Start typing...'
                             editor={editor}
                         />
 

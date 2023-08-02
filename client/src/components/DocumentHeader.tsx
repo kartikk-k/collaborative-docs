@@ -1,12 +1,28 @@
-import React from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
+import debounce from 'lodash.debounce'
 import { Toggle } from './ui/toggle'
 import { ArrowLeftIcon, LockIcon, RadioTowerIcon } from 'lucide-react'
 import { useActiveDocumentStore } from '@/store/DocumentStore'
 import CreateToast from './ToastNotification'
+import AuthContext from '../../context/AuthContext'
+import { Input } from './ui/input'
+import supabaseClient from '../../config/supabaseClient'
 
 
-function DocumentHeader() {
+
+interface DocumentHeaderProps {
+    title: string
+    createdAt: string
+}
+
+function DocumentHeader({ title, createdAt }: DocumentHeaderProps) {
+    const { isAuthenticated, userData } = useContext(AuthContext)
     const { collobrativeMode, setCollobrativeMode, activeDocument } = useActiveDocumentStore()
+
+    const [titleInput, setTitleInput] = useState<string>(title)
+
+    const date = createdAt ? new Date(createdAt).toISOString().split('T')[0] : ""
+
 
     // handles enable/disable for collobrative mode
     const collobrativeModeHandler = () => {
@@ -19,6 +35,31 @@ function DocumentHeader() {
 
     }
 
+
+    // updates title in database
+    const updateTitle = debounce(async (title: string) => {
+        console.log(title)
+
+        if (!activeDocument) return
+
+        // await supabaseClient
+        //     .from('Document')
+        //     .update('title')
+        //     .eq('id', activeDocument.id)
+        //     .single()
+
+    }, 500)
+
+    const debounceRequest = useCallback((title: string) => updateTitle(title), [])
+
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (activeDocument!.creator !== userData?.id) return console.log("You can't edit this document title.")
+
+        setTitleInput(e.target.value)
+        debounceRequest(e.target.value)
+    }
+
     return (
         <div className='flex items-center justify-between gap-4 p-4 bg-white border-b h-18'>
             <div className='flex items-center gap-4 select-none'>
@@ -28,8 +69,8 @@ function DocumentHeader() {
                 </button>
 
                 <div>
-                    <h1 className='font-semibold text-gray-700'>Development process</h1>
-                    <p className='text-xs text-gray-600'>Created on 25 Mar 2023 - Kartik</p>
+                    <Input value={titleInput} onChange={handleTitleChange} className='p-0 text-base font-semibold text-gray-700 bg-transparent border-none focus:bg-transparent' />
+                    <p className='text-xs text-gray-600'>Created on {date} - {userData?.name.split(' ')[0]}</p>
                 </div>
 
             </div>

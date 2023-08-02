@@ -18,6 +18,8 @@ export const useDocmentsStore = create<DocumentsStoreType>((set) => ({
 interface ActiveDocumentStoreType {
     isFetching: boolean;
     setIsFetching: (isFetching: boolean) => void;
+    isEditable: boolean;
+    setIsEditable: (isEditable: boolean) => void;
     activeDocument: DocumentType | null;
     setActiveDocument: (document: DocumentType) => void;
     collobrativeMode: boolean;
@@ -27,6 +29,8 @@ interface ActiveDocumentStoreType {
 export const useActiveDocumentStore = create<ActiveDocumentStoreType>((set) => ({
     isFetching: true,
     setIsFetching: (isFetching: boolean) => set({ isFetching }),
+    isEditable: false,
+    setIsEditable: (isEditable: boolean) => set({ isEditable }),
     activeDocument: null,
     setActiveDocument: (document: DocumentType) => set({ activeDocument: document }),
     collobrativeMode: false,
