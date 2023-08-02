@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import supabaseClient from '../../../config/supabaseClient'
 import AuthContext from '../../../context/AuthContext'
 import CreateToast from '@/components/ToastNotification'
+import Link from 'next/link'
 
 
 function Document() {
@@ -19,7 +20,7 @@ function Document() {
     const { isAuthenticated } = useContext(AuthContext)
     const { isFetching, setIsFetching, activeDocument, setActiveDocument } = useActiveDocumentStore()
 
-    const [documentNotFound, setDocumentNotFound] = useState<boolean | null>(null)
+    const [documentNotFound, setDocumentNotFound] = useState<boolean | undefined>(undefined)
 
     // gets document when id is available and user is authenticated
     useEffect(() => {
@@ -62,7 +63,7 @@ function Document() {
 
     return (
         <div>
-            {isFetching ? (
+            {isFetching || documentNotFound !== false ? (
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -70,9 +71,17 @@ function Document() {
                     exit={{ opacity: 0 }}
                     className='gap-2 screen-center'
                 >
-
-                    <Loader />
-                    <span className='text-sm'>Loading editor</span>
+                    {documentNotFound ? (
+                        <>
+                            <p className='text-sm'>Document not found</p>
+                            <Link href={'/dashboard'} className='text-sm'>Back to Dashboard</Link>
+                        </>
+                    ) : (
+                        <>
+                            <Loader />
+                            <span className='text-sm'>Loading editor</span>
+                        </>
+                    )}
 
                 </motion.div>
             ) : (
@@ -82,7 +91,8 @@ function Document() {
                     <Toolbox />
                     <Editor />
                 </div>
-            )}
+            )
+            }
 
         </div >
     )
