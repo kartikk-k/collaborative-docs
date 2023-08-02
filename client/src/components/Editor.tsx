@@ -232,7 +232,7 @@ function Editor() {
                         className='flex flex-col items-center gap-2'
                     >
 
-                        <Loader isLoading={true} />
+                        <Loader />
                         <span className='text-sm'>Loading editor</span>
 
                     </motion.div>

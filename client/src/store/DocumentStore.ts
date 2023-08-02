@@ -25,7 +25,7 @@ interface ActiveDocumentStoreType {
 }
 
 export const useActiveDocumentStore = create<ActiveDocumentStoreType>((set) => ({
-    isFetching: false,
+    isFetching: true,
     setIsFetching: (isFetching: boolean) => set({ isFetching }),
     activeDocument: null,
     setActiveDocument: (document: DocumentType) => set({ activeDocument: document }),

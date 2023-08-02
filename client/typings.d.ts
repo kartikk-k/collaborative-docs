@@ -15,7 +15,6 @@ export interface UserDataType {
 export interface DocumentType {
     id: string;
     created_at: string;
-    created_by: string;
     title: string;
     share_status: "private" | "public" | "limited";
     content: JSON[] | null;

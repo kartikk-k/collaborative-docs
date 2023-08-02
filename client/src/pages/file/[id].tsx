@@ -1,14 +1,66 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import DocumentHeader from '@/components/DocumentHeader'
 import Editor from '@/components/Editor'
 import Toolbox from '@/components/Toolbox'
 import { Loader } from '@/components/ui/loader'
 import { useActiveDocumentStore } from '@/store/DocumentStore'
+import { useRouter } from 'next/router'
+import supabaseClient from '../../../config/supabaseClient'
+import AuthContext from '../../../context/AuthContext'
+import CreateToast from '@/components/ToastNotification'
+
 
 function Document() {
 
-    const { isFetching, setIsFetching, activeDocument } = useActiveDocumentStore()
+    const router = useRouter()
+    const { id } = router.query // gets the document id from the url
+
+    const { isAuthenticated } = useContext(AuthContext)
+    const { isFetching, setIsFetching, activeDocument, setActiveDocument } = useActiveDocumentStore()
+
+    const [documentNotFound, setDocumentNotFound] = useState<boolean | null>(null)
+
+    // gets document when id is available and user is authenticated
+    useEffect(() => {
+        if (isAuthenticated !== undefined && !isAuthenticated) {
+            router.push('/account/login')
+            return
+        }
+
+        if (!id) return
+
+        getDocument()
+    }, [id, isAuthenticated])
+
+
+    // sets isFetching to false when document is fetched and loaded
+    useEffect(() => {
+        if (activeDocument === null) return
+
+        setIsFetching(false)
+        setDocumentNotFound(false)
+
+    }, [activeDocument])
+
+
+    // gets document data from database
+    const getDocument = async () => {
+        const { data, error } = await supabaseClient
+            .from('Document')
+            .select('*')
+            .eq('id', id)
+            .single()
+
+        console.log(data)
+
+        if (data) return setActiveDocument(data)
+        else {
+            setDocumentNotFound(true)
+            setIsFetching(false)
+            CreateToast({ heading: 'Error', message: 'Document not found' })
+        }
+    }
 
     return (
         <div>
@@ -28,7 +80,7 @@ function Document() {
                     className='flex flex-col items-center justify-center gap-2 my-40'
                 >
 
-                    <Loader isLoading={true} />
+                    <Loader />
                     <span className='text-sm'>Loading editor</span>
 
                 </motion.div>

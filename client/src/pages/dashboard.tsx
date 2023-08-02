@@ -96,7 +96,7 @@ function Dashboard() {
                                         </div>
                                         <div className='flex items-center gap-2'>
                                             <Button variant={'ghost'} size={'sm'}>
-                                                <Link href={`/document/${document.id}`}>
+                                                <Link href={`/file/${document.id}`}>
                                                     Open
                                                 </Link>
                                             </Button>
