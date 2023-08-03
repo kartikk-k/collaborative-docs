@@ -7,6 +7,7 @@ import CreateToast from './ToastNotification'
 import AuthContext from '../../context/AuthContext'
 import { Input } from './ui/input'
 import supabaseClient from '../../config/supabaseClient'
+import ShareAccess from './ShareAccess'
 
 
 
@@ -83,10 +84,12 @@ function DocumentHeader({ title, createdAt }: DocumentHeaderProps) {
                 </Toggle>
                 {/* </div> */}
 
-                <button className='items-center hidden gap-2 px-4 py-2 text-sm text-white duration-200 rounded-xl hover:bg-primary/90 sm:flex bg-primary'>
+                {/* <button className='items-center hidden gap-2 px-4 py-2 text-sm text-white duration-200 rounded-xl hover:bg-primary/90 sm:flex bg-primary'>
                     <LockIcon size={16} />
                     Share
-                </button>
+                </button> */}
+
+                <ShareAccess />
 
                 <div>
                     <div className='w-8 h-8 bg-gray-400 rounded-full'></div>

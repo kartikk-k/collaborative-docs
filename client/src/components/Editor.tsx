@@ -103,7 +103,7 @@ function Editor() {
                 placeholder: 'Start typing...',
             })
         ],
-        editable: true,
+        editable: isEditable,
         content: activeDocument?.content,
         onUpdate: ({ editor }) => {
             handleChange(editor.getJSON())
@@ -224,7 +224,7 @@ function Editor() {
                             className='absolute w-5 h-2 rounded-full bg-primary'></div> */}
 
                         <EditorContent
-                            className='cursor-auto'
+                            className='cursor-auto caret-gray-600'
                             placeholder='Start typing...'
                             editor={editor}
                         />

@@ -17,8 +17,8 @@ function Document() {
     const router = useRouter()
     const { id } = router.query // gets the document id from the url
 
-    const { isAuthenticated } = useContext(AuthContext)
-    const { isFetching, setIsFetching, activeDocument, setActiveDocument } = useActiveDocumentStore()
+    const { isAuthenticated, userData } = useContext(AuthContext)
+    const { isFetching, setIsFetching, activeDocument, setActiveDocument, setIsEditable } = useActiveDocumentStore()
 
     const [documentNotFound, setDocumentNotFound] = useState<boolean | undefined>(undefined)
 
@@ -53,7 +53,10 @@ function Document() {
 
         console.log(data)
 
-        if (data) return setActiveDocument(data)
+        if (data) {
+            if (userData?.id === data.creator) setIsEditable(true)
+            setActiveDocument(data)
+        }
         else {
             setDocumentNotFound(true)
             setIsFetching(false)
